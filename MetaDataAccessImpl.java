@@ -3,7 +3,6 @@ package com.spectralogic.dsbrowser.gui.components.metadata;
 import com.google.common.collect.ImmutableMap;
 import com.spectralogic.ds3client.helpers.Ds3ClientHelpers;
 import org.apache.commons.io.FilenameUtils;
-
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -23,23 +22,18 @@ public class MetaDataAccessImpl implements Ds3ClientHelpers.MetadataAccess {
 
     private ImmutableMap<String, Path> fileMapper = null;
 
-
     public MetaDataAccessImpl(ImmutableMap<String, Path> fileMapper)
     {
         this.fileMapper = fileMapper;
     }
 
-
     @Override
     public Map<String, String> getMetadataValue(String filename)
     {
-
         Map<String, String> metadata = new HashMap<>();
-
         try {
             Path file = fileMapper.get(filename);
             metadata = storeMetaData(file);
-
         }
         catch (Exception e)
         {
@@ -48,19 +42,14 @@ public class MetaDataAccessImpl implements Ds3ClientHelpers.MetadataAccess {
         return metadata;
     }
 
-
     /*
     * to store the meta data on server
     *
     * */
     private Map<String,String> storeMetaData(Path file)
     {
-
         final Map<String, String> metadata = new HashMap<>();
-
         try {
-
-
             FileSystem store = file.getFileSystem();
             System.out.println(store.getFileStores().iterator().next().name());
             Set<String> sets = store.supportedFileAttributeViews();
@@ -79,7 +68,7 @@ public class MetaDataAccessImpl implements Ds3ClientHelpers.MetadataAccess {
                         String ext = FilenameUtils.getExtension(file.getParent()+"/"+file.getFileName());
                         metadata.put("x-amz-meta-ds3-fileFormat", ext);
                         break;
-
+                        
                     case "owner":
 
                         break;
@@ -95,11 +84,8 @@ public class MetaDataAccessImpl implements Ds3ClientHelpers.MetadataAccess {
                         metadata.put("x-amz-meta-ds3-owner"   , attr1.owner().getName());
                         metadata.put("x-amz-meta-ds3-groupName"   , attr1.group().getName());
                         //metadata.put("Permisions: "   , PosixFilePermissions.toString(attr1.permissions()));
-
                         break;
                 }
-
-
             }
         }
         catch (IOException ioe)
@@ -107,6 +93,5 @@ public class MetaDataAccessImpl implements Ds3ClientHelpers.MetadataAccess {
             ioe.printStackTrace();
         }
         return metadata;
-
     }
 }
