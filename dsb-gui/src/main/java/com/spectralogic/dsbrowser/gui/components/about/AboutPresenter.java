@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 public class AboutPresenter implements Initializable {
     @FXML
-    private Label aboutDSBLabel1, aboutDSBLabel2;
+    private Label copyRightLabel1, copyRightLabel2;
     @FXML
     private Hyperlink hyperlink;
 
@@ -41,14 +41,7 @@ public class AboutPresenter implements Initializable {
                 e1.printStackTrace();
             }
         });
-        aboutDSBLabel1.setText("Copyright 2016 Spectra Logic Corporation\n\n" +
-                "Licensed under the Apache License, Version 2.1\n" +
-                "You may not use this application except in compliance with the License.\n" +
-                "You may obtain a copy of the License at:-\n");
-        aboutDSBLabel2.setText("Unless required by applicable law or agreed to in writing,\n" +
-                "software distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
-                "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either\n" +
-                "express or implied.See the License for the specific language governing \n" +
-                "permissions and limitations under the License.");
+        copyRightLabel1.setText(resourceBundle.getString("copyrightTxt1"));
+        copyRightLabel2.setText(resourceBundle.getString("copyrightTxt2"));
     }
 }
