@@ -90,7 +90,7 @@ public class DeepStorageBrowserPresenter implements Initializable {
     private ScrollPane scrollPane;
 
     @FXML
-    private MenuItem aboutMenuItem, closeMenuItem, sessionsMenuItem, settingsMenuItem;
+    private MenuItem aboutMenuItem, closeMenuItem, sessionsMenuItem, settingsMenuItem, fileProperties;
 
     @FXML
     private Menu fileMenu, helpMenu, viewMenu;
@@ -415,7 +415,7 @@ public class DeepStorageBrowserPresenter implements Initializable {
         }
         if (jobWorkers.getTasks().size() != 0) {
             final ImmutableList<Ds3JobTask> collect = jobWorkers.getTasks().stream().collect(GuavaCollectors.immutableList());
-            Task task = new Task() {
+            final Task task = new Task() {
                 @Override
                 protected Object call() throws Exception {
                     collect.stream().forEach(i -> {
@@ -425,20 +425,20 @@ public class DeepStorageBrowserPresenter implements Initializable {
                                 ds3PutJob.cancel();
                                 ParseJobInterruptionMap.removeJobID(jobInterruptionStore, ds3PutJob.getJobId().toString(), ds3PutJob.getClient().getConnectionDetails().getEndpoint(), null);
                                 final CancelJobSpectraS3Response cancelJobSpectraS3Response = ds3PutJob.getClient().cancelJobSpectraS3(new CancelJobSpectraS3Request(ds3PutJob.getJobId()));
-                                Platform.runLater(() -> LOG.info("Cancelled job. Status code: ", cancelJobSpectraS3Response.getResponse().getStatusCode()));
+                                Platform.runLater(() -> LOG.info("Cancelled job."));
                             } else if (i instanceof Ds3GetJob) {
                                 final Ds3GetJob ds3GetJob = (Ds3GetJob) i;
                                 ds3GetJob.cancel();
                                 ParseJobInterruptionMap.removeJobID(jobInterruptionStore, ds3GetJob.getJobId().toString(), ds3GetJob.getDs3Client().getConnectionDetails().getEndpoint(), null);
                                 final CancelJobSpectraS3Response cancelJobSpectraS3Response = ds3GetJob.getDs3Client().cancelJobSpectraS3(new CancelJobSpectraS3Request(ds3GetJob.getJobId()));
-                                Platform.runLater(() -> LOG.info("Cancelled job. Status code: ", cancelJobSpectraS3Response.getResponse().getStatusCode()));
+                                Platform.runLater(() -> LOG.info("Cancelled job."));
 
                             } else if (i instanceof RecoverInterruptedJob) {
                                 final RecoverInterruptedJob recoverInterruptedJob = (RecoverInterruptedJob) i;
                                 recoverInterruptedJob.cancel();
                                 ParseJobInterruptionMap.removeJobID(jobInterruptionStore, recoverInterruptedJob.getUuid().toString(), recoverInterruptedJob.getDs3Client().getConnectionDetails().getEndpoint(), null);
                                 final CancelJobSpectraS3Response cancelJobSpectraS3Response = recoverInterruptedJob.getDs3Client().cancelJobSpectraS3(new CancelJobSpectraS3Request(recoverInterruptedJob.getUuid()));
-                                Platform.runLater(() -> LOG.info("Cancelled job. Status code: ", cancelJobSpectraS3Response.getResponse().getStatusCode()));
+                                Platform.runLater(() -> LOG.info("Cancelled job."));
 
                             }
                         } catch (final Exception e1) {
@@ -485,7 +485,26 @@ public class DeepStorageBrowserPresenter implements Initializable {
             }
             scrollPane.setVvalue(1.0);
         }
+    }
 
+    //set the same color for all the lines of string log seprated by \n
+    public void logTextForParagraph(final String log, final LogType type) {
+        final int previousSize = inlineCssTextArea.getParagraphs().size() - 2;
+        inlineCssTextArea.appendText(formattedString(log));
+        final int size = inlineCssTextArea.getParagraphs().size() - 2;
+
+        for (int i = previousSize + 1; i <= size; i++)
+            switch (type) {
+                case SUCCESS:
+                    inlineCssTextArea.setStyle(i, "-fx-fill: GREEN;");
+                    break;
+                case ERROR:
+                    inlineCssTextArea.setStyle(i, "-fx-fill: RED;");
+                    break;
+                default:
+                    inlineCssTextArea.setStyle(i, "-fx-fill: BLACK;");
+            }
+        scrollPane.setVvalue(1.0);
     }
 
     private String formattedString(final String log) {

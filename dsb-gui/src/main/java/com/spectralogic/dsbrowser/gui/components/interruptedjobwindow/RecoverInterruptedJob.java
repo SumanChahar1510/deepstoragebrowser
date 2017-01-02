@@ -34,7 +34,7 @@ public class RecoverInterruptedJob extends Ds3JobTask {
     private final JobInterruptionStore jobInterruptionStore;
     private final Ds3Client ds3Client;
 
-    public RecoverInterruptedJob(final UUID uuid, final EndpointInfo endpointInfo, JobInterruptionStore jobInterruptionStore) {
+    public RecoverInterruptedJob(final UUID uuid, final EndpointInfo endpointInfo, final JobInterruptionStore jobInterruptionStore) {
         this.uuid = uuid;
         this.endpointInfo = endpointInfo;
         this.jobInterruptionStore = jobInterruptionStore;
@@ -65,17 +65,21 @@ public class RecoverInterruptedJob extends Ds3JobTask {
             final Map<String, Path> files = filesAndFolderMapMap.getFiles();
             final Map<String, Path> folders = filesAndFolderMapMap.getFolders();
 
+            final long totalJobSize = filesAndFolderMapMap.getTotalJobSize();
+
             if (filesAndFolderMapMap.getType().equals("PUT")) {
                 job = helpers.recoverWriteJob(uuid);
                 updateMessage("Initiating transfer to " + job.getBucketName());
+
             } else if (filesAndFolderMapMap.getType().equals("GET")) {
                 job = helpers.recoverReadJob(uuid);
                 fileTreeModel = Paths.get(filesAndFolderMapMap.getTargetLocation());
+
                 updateMessage("Initiating transfer from " + job.getBucketName());
             }
 
             final AtomicLong totalSent = new AtomicLong(0L);
-            final long totalJobSize = filesAndFolderMapMap.getTotalJobSize();
+
 
             job.attachDataTransferredListener(l -> {
                 updateProgress(totalSent.getAndAdd(l) / 2, totalJobSize);
@@ -111,12 +115,12 @@ public class RecoverInterruptedJob extends Ds3JobTask {
                                         skipPath = file.getParent();
                                     else
                                         skipPath = "";
-                                } else {
+                                }/* else {
                                     final Stream<Map.Entry<String, Path>> entryStream = folders.entrySet().stream().filter(i -> s.startsWith(i.getKey()));
                                     if (entryStream != null) {
                                         skipPath = entryStream.findFirst().get().getValue().toString();
                                     }
-                                }
+                                }*/
                                 if (skipPath.isEmpty()) {
                                     return new FileObjectGetter(finalFileTreeModel).buildChannel(s);
                                 } else {
@@ -150,6 +154,7 @@ public class RecoverInterruptedJob extends Ds3JobTask {
                 ParseJobInterruptionMap.setButtonAndCountNumber(jobIDMap, endpointInfo.getDeepStorageBrowserPresenter());
             }
         } catch (final Exception e) {
+            e.printStackTrace();
             if (e instanceof FailedRequestException) {
                 Platform.runLater(() -> endpointInfo.getDeepStorageBrowserPresenter().logText("Job not found. Cancelling job.", LogType.INFO));
                 cancel();

@@ -193,10 +193,10 @@ public class NewSessionPresenter implements Initializable {
                 ALERT.setContentText("Please Enter valid port number for the session.");
                 ALERT.showAndWait();
             } else if (!SessionValidation.checkStringEmptyNull(model.getAccessKey())) {
-                ALERT.setContentText("Please Enter Spectra S3 Endpoint Access Key.");
+                ALERT.setContentText("Please Enter Spectra S3 Data Path Access Key.");
                 ALERT.showAndWait();
             } else if (!SessionValidation.checkStringEmptyNull(model.getSecretKey())) {
-                ALERT.setContentText("Please Enter Spectra S3 Endpoint Secret Key.");
+                ALERT.setContentText("Please Enter Spectra S3 Data Path Secret Key.");
                 ALERT.showAndWait();
             } else {
                 final Session session = model.toSession();
@@ -219,10 +219,10 @@ public class NewSessionPresenter implements Initializable {
                 ALERT.setContentText("Please Enter valid port number for the session.");
                 ALERT.showAndWait();
             } else if (!SessionValidation.checkStringEmptyNull(model.getAccessKey())) {
-                ALERT.setContentText("Please Enter Spectra S3 Endpoint Access Key.");
+                ALERT.setContentText("Please Enter Spectra S3 Data Path Access Key.");
                 ALERT.showAndWait();
             } else if (!SessionValidation.checkStringEmptyNull(model.getSecretKey())) {
-                ALERT.setContentText("Please Enter Spectra S3 Endpoint Secret Key.");
+                ALERT.setContentText("Please Enter Spectra S3 Data Path Secret Key.");
                 ALERT.showAndWait();
             } else {
                 final Session session = model.toSession();
@@ -243,21 +243,20 @@ public class NewSessionPresenter implements Initializable {
     public void saveSession() {
         LOG.info("Creating new session");
         ALERT.setTitle("New User Session");
-
         if (!SessionValidation.checkStringEmptyNull(model.getSessionName())) {
             ALERT.setContentText("Please Enter name for the session. !!");
             ALERT.showAndWait();
         } else if (!SessionValidation.checkStringEmptyNull(model.getEndpoint())) {
-            ALERT.setContentText("Please Enter the IP address. !!");
+            ALERT.setContentText("Please Enter the Data Path address. !!");
             ALERT.showAndWait();
         } else if (!SessionValidation.validatePort(model.getPortNo())) {
             ALERT.setContentText("Please Enter valid port number for the session. !!");
             ALERT.showAndWait();
         } else if (!SessionValidation.checkStringEmptyNull(model.getAccessKey())) {
-            ALERT.setContentText("Please Enter Spectra S3 Endpoint Access Key. !!");
+            ALERT.setContentText("Please Enter Spectra S3 Data Path Access Key. !!");
             ALERT.showAndWait();
         } else if (!SessionValidation.checkStringEmptyNull(model.getSecretKey())) {
-            ALERT.setContentText("Please Enter Spectra S3 Endpoint Secret Key. !!");
+            ALERT.setContentText("Please Enter Spectra S3 Data Path Secret Key. !!");
             ALERT.showAndWait();
         } else {
             final Session session = model.toSession();
@@ -274,7 +273,7 @@ public class NewSessionPresenter implements Initializable {
                     savedSessions.getSelectionModel().select(i);
                     try {
                         SavedSessionStore.saveSavedSessionStore(savedSessionStore);
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         e.printStackTrace();
                     }
                     if (i <= previousSize) {
@@ -304,8 +303,8 @@ public class NewSessionPresenter implements Initializable {
         items.add(new PropertyItem(resourceBundle.getString("endpointLabel"), model.endpointProperty(), "Access Credentials", "The Spectra S3 BlackPearl data path address. Can be a DNS entry or IP address", String.class));
         items.add(new PropertyItem(resourceBundle.getString("portNo"), model.portNoProperty(), "Access Credentials", "The port number for the session", String.class));
         items.add(new PropertyItem(resourceBundle.getString("proxyServer"), model.proxyServerProperty(), "Access Credentials", "Provide in format http(s)://server:port, e.g. \"http://localhost:8080\"", String.class));
-        items.add(new PropertyItem(resourceBundle.getString("accessIDLabel"), model.accessKeyProperty(), "Access Credentials", "The Spectra S3 Endpoint Access ID", String.class));
-        items.add(new PropertyItem(resourceBundle.getString("secretIDLabel"), model.secretKeyProperty(), "Access Credentials", "The Spectra S3 Endpoint Secret Key", String.class));
+        items.add(new PropertyItem(resourceBundle.getString("accessIDLabel"), model.accessKeyProperty(), "Access Credentials", "The Spectra S3 Data Path Access ID", String.class));
+        items.add(new PropertyItem(resourceBundle.getString("secretIDLabel"), model.secretKeyProperty(), "Access Credentials", "The Spectra S3 Data Path Secret Key", String.class));
 
         final PropertySheet propertySheet = new PropertySheet(items);
         propertySheet.setMode(PropertySheet.Mode.NAME);

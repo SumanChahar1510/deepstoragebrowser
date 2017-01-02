@@ -91,7 +91,7 @@ public class NewSessionModel {
         return proxyServer.get();
     }
 
-    public void setProxyServer(String proxyServer) {
+    public void setProxyServer(final String proxyServer) {
         this.proxyServer.set(proxyServer);
     }
 
@@ -129,6 +129,11 @@ public class NewSessionModel {
             ALERT.showAndWait();
         } catch (final FailedRequestException e) {
             if (e.getStatusCode() == 403) {
+                if (e.getError().getCode().equals("RequestTimeTooSkewed")) {
+                    ALERT.setTitle("Failed To authenticate session");
+                    ALERT.setContentText("Failed To authenticate session : Client's clock is not synchronized with server's clock");
+                    ALERT.showAndWait();
+                }
                 ALERT.setTitle("Invalid ID and KEY");
                 ALERT.setContentText("Invalid Access ID or Secret Key");
                 ALERT.showAndWait();
@@ -138,16 +143,17 @@ public class NewSessionModel {
                 ALERT.showAndWait();
 
             }
-        } catch (final IOException e) {
-            ALERT.setTitle("Networking Error");
-            ALERT.setContentText("Encountered a networking error");
-            ALERT.showAndWait();
+        } catch (final Exception e) {
 
-        } catch (final RuntimeException e) {
-            ALERT.setTitle("Error");
-            ALERT.setContentText("Authentication error. Please check your credentials");
-            ALERT.showAndWait();
-
+            if (e instanceof IOException) {
+                ALERT.setTitle("Networking Error");
+                ALERT.setContentText("Encountered a networking error");
+                ALERT.showAndWait();
+            } else if (e instanceof RuntimeException) {
+                ALERT.setTitle("Error");
+                ALERT.setContentText("Authentication error. Please check your credentials");
+                ALERT.showAndWait();
+            }
         }
         return null;
     }

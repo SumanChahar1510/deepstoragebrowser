@@ -3,6 +3,7 @@ package com.spectralogic.dsbrowser.gui.components.createbucket;
 import com.spectralogic.ds3client.commands.spectrads3.PutBucketSpectraS3Request;
 import com.spectralogic.ds3client.commands.spectrads3.PutBucketSpectraS3Response;
 import com.spectralogic.dsbrowser.gui.DeepStorageBrowserPresenter;
+import com.spectralogic.dsbrowser.gui.components.ds3panel.Ds3PanelPresenter;
 import com.spectralogic.dsbrowser.gui.services.Workers;
 import com.spectralogic.dsbrowser.gui.util.Ds3Task;
 import com.spectralogic.dsbrowser.gui.util.LogType;
@@ -49,6 +50,9 @@ public class CreateBucketPresenter implements Initializable {
 
     @Inject
     private DeepStorageBrowserPresenter deepStorageBrowserPresenter;
+
+    @Inject
+    private Ds3PanelPresenter ds3PanelPresenter;
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
@@ -97,7 +101,8 @@ public class CreateBucketPresenter implements Initializable {
                     final CreateBucketModel dataPolicy = createBucketWithDataPoliciesModel.getDataPolicies().stream().filter(i -> i.getDataPolicy().equals(dataPolicyCombo.getValue())).findFirst().get();
                     final PutBucketSpectraS3Response response = getClient().putBucketSpectraS3(new PutBucketSpectraS3Request(bucketNameField.getText().trim()).withDataPolicyId(dataPolicy.getId()));
                     Platform.runLater(() -> {
-                        deepStorageBrowserPresenter.logText("Create bucket status code: " + response.getResponse().getStatusCode(), LogType.SUCCESS);
+                      //  ds3PanelPresenter.disableSearch(false);
+                        //deepStorageBrowserPresenter.logText("Create bucket status code: " + response.getResponse().getStatusCode(), LogType.SUCCESS);
                         deepStorageBrowserPresenter.logText("Bucket is created.", LogType.SUCCESS);
                     });
                     return response;

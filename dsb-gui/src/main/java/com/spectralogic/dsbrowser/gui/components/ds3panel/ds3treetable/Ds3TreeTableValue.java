@@ -15,8 +15,24 @@ public class Ds3TreeTableValue implements Serializable {
     private final HBox physicalPlacementHBox;
     private final String owner;
     private final boolean searchOn;
+    private String marker = "";
+    private String fullPath;
 
     public Ds3TreeTableValue(final String bucketName, final String name, final Type type, final long size, final String lastModified, final String owner, final boolean searchOn, final HBox physicalPlacementHBox) {
+        this.bucketName = bucketName;
+        this.fullName = name;
+        this.name = getLastPart(name, type);
+        this.fullPath = getPathExcludeName(bucketName, fullName);
+        this.type = type;
+        this.size = size;
+        this.lastModified = lastModified;
+        this.physicalPlacementHBox = physicalPlacementHBox;
+        this.owner = owner;
+        this.searchOn = searchOn;
+    }
+
+    //constructor with marker
+    public Ds3TreeTableValue(final String bucketName, final String name, final Type type, final long size, final String lastModified, final String owner, final boolean searchOn, final HBox physicalPlacementHBox, final String marker) {
         this.bucketName = bucketName;
         this.fullName = name;
         this.name = getLastPart(name, type);
@@ -26,7 +42,10 @@ public class Ds3TreeTableValue implements Serializable {
         this.physicalPlacementHBox = physicalPlacementHBox;
         this.owner = owner;
         this.searchOn = searchOn;
+        this.marker = marker;
+        this.fullPath = getPathExcludeName(bucketName, fullName);
     }
+
 
     public boolean isSearchOn() {
         return searchOn;
@@ -46,6 +65,17 @@ public class Ds3TreeTableValue implements Serializable {
         }
         final int index = name.lastIndexOf('/');
         return name.substring(index + 1);
+    }
+
+    private static String getPathExcludeName(final String bucketName, final String fullPath) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(bucketName);
+        stringBuilder.append("/");
+        final int index = fullPath.lastIndexOf("/");
+        if (index != -1) {
+            stringBuilder.append(fullPath.substring(0, index));
+        }
+        return stringBuilder.toString();
     }
 
     public String getName() {
@@ -72,6 +102,14 @@ public class Ds3TreeTableValue implements Serializable {
         return bucketName;
     }
 
+    public String getMarker() {
+        return marker;
+    }
+
+    public void setMarker(final String marker) {
+        this.marker = marker;
+    }
+
     public String getDirectoryName() {
         switch (type) {
             case Directory:
@@ -95,7 +133,15 @@ public class Ds3TreeTableValue implements Serializable {
         return owner;
     }
 
+    public String getFullPath() {
+        return fullPath;
+    }
+
+    public void setFullPath(final String fullPath) {
+        this.fullPath = fullPath;
+    }
+
     public enum Type {
-        File, Directory, Bucket
+        File, Directory, Bucket, Loader
     }
 }

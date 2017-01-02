@@ -19,18 +19,18 @@ public class Ds3Common {
 
     private final List<TabPane> currentTabPane = new ArrayList<>();
 
-    private final DeepStorageBrowserPresenter deepStorageBrowserPresenter = new DeepStorageBrowserPresenter();
+    private DeepStorageBrowserPresenter deepStorageBrowserPresenter = new DeepStorageBrowserPresenter();
 
     private Ds3PanelPresenter ds3PanelPresenter;
 
     public Ds3Common() {
     }
-    
+
     public Ds3PanelPresenter getDs3PanelPresenter() {
         return ds3PanelPresenter;
     }
 
-    public void setDs3PanelPresenter(Ds3PanelPresenter ds3PanelPresenter) {
+    public void setDs3PanelPresenter(final Ds3PanelPresenter ds3PanelPresenter) {
         this.ds3PanelPresenter = ds3PanelPresenter;
     }
 
@@ -49,4 +49,9 @@ public class Ds3Common {
     public DeepStorageBrowserPresenter getDeepStorageBrowserPresenter() {
         return deepStorageBrowserPresenter;
     }
+
+    public void setDeepStorageBrowserPresenter(final DeepStorageBrowserPresenter deepStorageBrowserPresenter) {
+        this.deepStorageBrowserPresenter = deepStorageBrowserPresenter;
+    }
+
 }
